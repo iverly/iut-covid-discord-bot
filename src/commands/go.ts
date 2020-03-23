@@ -9,12 +9,11 @@ export default {
         if (!sender.roles.has(config.professorId)) return;
         if (args[0]) {
             const target = getUserFromMention(channel.guild, args[0]);
-
-            if (sender.id === target.id) return;
-            if (target === null) {
+            if (!target) {
                 const messageSend = await channel.send('Utilisateur introuvable ...');
                 return messageSend.delete(15 * 1000);
             }
+            if (sender.id === target.id) return;
 
             if (target.user.presence.status === 'offline') {
                 const messageSend = await channel.send('La personne est hors-ligne');

@@ -10,11 +10,11 @@ export default {
         if (args[0]) {
             const target = getUserFromMention(channel.guild, args[0]);
 
-            if (sender.id === target.id) return;
-            if (target === null) {
+            if (!target) {
                 const messageSend = await channel.send('Utilisateur introuvable ...');
                 return messageSend.delete(15 * 1000);
             }
+            if (sender.id === target.id) return;
 
             for (const v of Object.values(config.groupsId)) {
                 const find = target.roles.array().filter(r => r.id === v[0]);
