@@ -1,3 +1,4 @@
 import goCommand from './go';
+import infoCommand from './info';
 
-export default [goCommand];
+export default [goCommand, infoCommand];

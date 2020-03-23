@@ -1,6 +1,5 @@
 import { Client } from 'discord.js';
 import events from '@/events';
-import config from './config';
 
 const client = new Client();
 

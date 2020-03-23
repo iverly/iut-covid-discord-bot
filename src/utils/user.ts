@@ -1,5 +1,4 @@
-import { Client, Guild } from 'discord.js';
-import config from '@/config';
+import { Guild } from 'discord.js';
 
 export function getUserFromMention(guild: Guild, mentionFrom: string) {
     let mention = mentionFrom;
@@ -12,6 +11,6 @@ export function getUserFromMention(guild: Guild, mentionFrom: string) {
             mention = mention.slice(1);
         }
 
-        return guild.members.get(mention);
+        return guild.members.get(mention) || null;
     }
 }
