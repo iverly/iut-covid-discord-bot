@@ -7,16 +7,21 @@ export default {
         await message.delete();
         if (args[0]) {
             const target = getUserFromMention(channel.guild, args[0]);
+            if (target.user.presence.status === 'offline') {
+                const messageSend = await channel.send('La personne est hors-ligne');
+                return messageSend.delete(5000);
+            }
+
             if (sender.voiceChannelID === target.voiceChannelID) return;
             if (sender.voiceChannelID) {
-                await sender.setVoiceChannel(target.voiceChannelID);
+                sender.setVoiceChannel(target.voiceChannelID);
             } else {
                 const messageSend = await channel.send(`La personne se situe dans le channel vocal: ${target.voiceChannel}`);
-                messageSend.delete(5000);
+                return messageSend.delete(5000);
             }
         } else {
             const messageSend = await channel.send('Nous devez mentioner un quelqu\'un ! (@Nom)');
-            messageSend.delete(5000);
+            return messageSend.delete(5000);
         }
     },
 };
