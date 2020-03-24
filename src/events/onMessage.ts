@@ -11,7 +11,7 @@ export default {
         const command = split[0];
         const args = split.slice(1);
         commands.forEach((c) => {
-            if (c.name === command) c.handler(client, message.member, message, message.channel as TextChannel, args);
+            if (c.name === command.toLowerCase()) c.handler(client, message.member, message, message.channel as TextChannel, args);
         });
     },
 };
