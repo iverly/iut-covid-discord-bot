@@ -5,7 +5,7 @@ import config from '@/config';
 export default {
     name: 'go',
     async handler(client: Client, sender: GuildMember, message: Message, channel: TextChannel, args: string[]) {
-        await message.delete();
+        await message.delete(2000);
         if (!sender.roles.has(config.professorId)) return;
         if (args[0]) {
             const target = getUserFromMention(channel.guild, args[0]);
