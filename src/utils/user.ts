@@ -21,6 +21,10 @@ export function isMemberProfessorOrDelegue(member: GuildMember) {
     return member.roles.has(config.professorId) || member.roles.has(config.delegueId);
 }
 
+export function isMemberProfessor(member: GuildMember) {
+    return member.roles.has(config.professorId);
+}
+
 export function getMemberGroupId(member: GuildMember): string {
     for (const v of Object.values(config.groupsId)) {
         const find = member.roles.array().filter(r => r.id === v[0]);
