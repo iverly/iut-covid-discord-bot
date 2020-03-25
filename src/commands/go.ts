@@ -32,13 +32,15 @@ export default {
 
             if (sender.voiceChannelID) {
                 sender.setVoiceChannel(target.voiceChannelID);
+                const messageSend = await channel.send(`Vous avez été déplacé dans le channel: ${target.voiceChannel}`);
+                messageSend.delete(15 * 1000);
             } else {
                 const messageSend = await channel.send(`La personne se situe dans le channel vocal: ${target.voiceChannel}`);
-                return messageSend.delete(15 * 1000);
+                messageSend.delete(15 * 1000);
             }
         } else {
             const messageSend = await channel.send('Nous devez mentioner un quelqu\'un ! (@Nom)');
-            return messageSend.delete(15 * 1000);
+            messageSend.delete(15 * 1000);
         }
     },
 };
