@@ -10,7 +10,7 @@ export default {
         await message.delete();
         if (!isMemberProfessor(sender)) return;
         if (args[0]) {
-            let messageTarget;
+            let messageTarget: Message;
             try {
                 messageTarget = await channel.fetchMessage(args[0]);
             } catch (err) {
@@ -21,6 +21,14 @@ export default {
                 const messageSend = await channel.send('Message introuvable ...');
                 return messageSend.delete(15 * 1000);
             }
+
+            let question: string;
+            if (messageTarget.embeds.length) {
+                question = messageTarget.embeds[0].title.replace(/\*/g, '');
+            } else {
+                question = messageTarget.content.replace('poll: ', '') || 'Question introuvable';
+            }
+
             const final = [['Étudiant', 'Pseudo', 'Réponse']];
             for (const reaction of messageTarget.reactions.values()) {
                 const found = Object.keys(config.emojiId).filter(e => reaction.emoji.identifier === e);
@@ -34,7 +42,7 @@ export default {
             }
             csv(final, { delimiter: ';' }, (err, output) => {
                 if (err) return;
-                const buf = Buffer.from(output, 'utf8');
+                const buf = Buffer.from(`${question}\n${output}`, 'utf8');
                 sender.send(new Attachment(buf, `sondage-${dateFormat(new Date(), 'ddHHMMssl')}.csv`));
             });
         }
