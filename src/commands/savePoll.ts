@@ -21,18 +21,18 @@ export default {
                 const messageSend = await channel.send('Message introuvable ...');
                 return messageSend.delete(15 * 1000);
             }
-            const final = [['Étudiant', 'Réponse']];
+            const final = [['Étudiant', 'Pseudo', 'Réponse']];
             for (const reaction of messageTarget.reactions.values()) {
                 const found = Object.keys(config.emojiId).filter(e => reaction.emoji.identifier === e);
                 if (found.length) {
                     await reaction.fetchUsers();
                     reaction.users.forEach((u) => {
                         const member = getMemberFromUser(message.guild, u);
-                        if (member) final.push([member.displayName, config.emojiId[found[0]]]);
+                        if (member && !member.user.bot) final.push([member.displayName, member.user.tag, config.emojiId[found[0]]]);
                     });
                 }
             }
-            csv(final, (err, output) => {
+            csv(final, { delimiter: ';' }, (err, output) => {
                 if (err) return;
                 const buf = Buffer.from(output, 'utf8');
                 sender.send(new Attachment(buf, `sondage-${dateFormat(new Date(), 'ddHHMMssl')}.csv`));
