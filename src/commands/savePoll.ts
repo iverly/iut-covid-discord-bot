@@ -26,7 +26,7 @@ export default {
             if (messageTarget.embeds.length) {
                 question = messageTarget.embeds[0].title.replace(/\*/g, '');
             } else {
-                question = messageTarget.content.replace('poll: ', '') || 'Question introuvable';
+                question = messageTarget.content.replace('poll:', '') || 'Question introuvable';
             }
 
             const final = [['Étudiant', 'Pseudo', 'Réponse']];
