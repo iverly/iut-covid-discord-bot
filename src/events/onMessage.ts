@@ -5,6 +5,7 @@ import commands from '@/commands';
 export default {
     name: 'message',
     async handler(client: Client, message: Message) {
+        if (message.channel.type === 'dm') return;
         if (!message.content.startsWith(prefix)) return;
         const withoutPrefix = message.content.slice(prefix.length);
         const split = withoutPrefix.split(/ +/);

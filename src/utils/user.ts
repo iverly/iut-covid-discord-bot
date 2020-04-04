@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Role } from 'discord.js';
+import { Guild, GuildMember, Role, User } from 'discord.js';
 import config from '@/config';
 import { getRoleById } from './role';
 
@@ -37,4 +37,8 @@ export function getMemberGroup(guild: Guild, member: GuildMember): Role {
     const roleId = getMemberGroupId(member);
     if (!roleId) return null;
     return getRoleById(guild, roleId);
+}
+
+export function getMemberFromUser(guild: Guild, user: User) {
+    return guild.members.get(user.id);
 }
