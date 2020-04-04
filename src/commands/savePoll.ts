@@ -35,7 +35,7 @@ export default {
             csv(final, (err, output) => {
                 if (err) return;
                 const buf = Buffer.from(output, 'utf8');
-                sender.send(new Attachment(buf, `sondage-${dateFormat(new Date(), 'HHMMss')}.csv`));
+                sender.send(new Attachment(buf, `sondage-${dateFormat(new Date(), 'ddHHMMssl')}.csv`));
             });
         }
     },
