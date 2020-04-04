@@ -20,6 +20,7 @@
     "debug": "^4.1.1",
     "discord.js": "^11.5.2",
     "dotenv": "^8.2.0",
+    "emoji-strip": "^1.0.1",
     "tslint": "^6.1.0",
     "tslint-config-airbnb": "^5.11.2",
     "ttypescript": "^1.5.10",

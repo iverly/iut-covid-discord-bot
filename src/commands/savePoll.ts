@@ -3,6 +3,7 @@ import { isMemberProfessor, getUserFromMention, getMemberFromUser } from '@/util
 import config from '@/config';
 import * as dateFormat from 'dateformat';
 import * as csv from 'csv-stringify';
+import * as emojiStrip from 'emoji-strip';
 
 export default {
     name: 'savepoll',
@@ -23,23 +24,34 @@ export default {
             }
 
             let question: string;
+            let lines: string[] = [];
             if (messageTarget.embeds.length) {
                 question = messageTarget.embeds[0].title.replace(/\*/g, '');
+                lines = messageTarget.embeds[0].description.split('\n');
+                lines = lines.slice(0, lines.length - 2);
+                lines = lines.filter(r => r);
             } else {
                 question = messageTarget.content.replace('poll:', '') || 'Question introuvable';
             }
 
-            const final = [['Étudiant', 'Pseudo', 'Réponse']];
+            const menu = ['Étudiant', 'Pseudo', 'Réponse'];
+            if (lines.length) menu.push('Intitulé');
+            const final = [menu];
             for (const reaction of messageTarget.reactions.values()) {
                 const found = Object.keys(config.emojiId).filter(e => reaction.emoji.identifier === e);
                 if (found.length) {
+                    const foundEmoji = lines.filter(r => r.startsWith(reaction.emoji.name));
+                    const response = foundEmoji.length ? (emojiStrip(foundEmoji[0]) as string).slice(1) : null;
                     await reaction.fetchUsers();
                     reaction.users.forEach((u) => {
                         const member = getMemberFromUser(message.guild, u);
-                        if (member && !member.user.bot) final.push([member.displayName, member.user.tag, config.emojiId[found[0]]]);
+                        const result = [member.displayName, member.user.tag, config.emojiId[found[0]]];
+                        if (response) result.push(response);
+                        if (member && !member.user.bot) final.push(result);
                     });
                 }
             }
+
             csv(final, { delimiter: ';' }, (err, output) => {
                 if (err) return;
                 const buf = Buffer.from(`${question}\n${output}`, 'utf8');
