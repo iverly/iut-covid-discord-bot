@@ -3,7 +3,6 @@ import { isMemberProfessor, getUserFromMention, getMemberFromUser } from '@/util
 import config from '@/config';
 import * as dateFormat from 'dateformat';
 import * as csv from 'csv-stringify';
-import * as emojiStrip from 'emoji-strip';
 
 export default {
     name: 'savepoll',
@@ -26,26 +25,25 @@ export default {
             let question: string;
             let lines: string[] = [];
             if (messageTarget.embeds.length) {
-                question = messageTarget.embeds[0].title.replace(/\*/g, '');
+                question = messageTarget.content.replace(/\*/g, '').replace(':bar_chart: ', '') || 'Question introuvable';
                 lines = messageTarget.embeds[0].description.split('\n');
-                lines = lines.slice(0, lines.length - 2);
                 lines = lines.filter(r => r);
             } else {
-                question = messageTarget.content.replace('poll:', '') || 'Question introuvable';
+                question = messageTarget.content.replace(/\*/g, '').replace(':bar_chart: ', '') || 'Question introuvable';
             }
 
-            const menu = ['Étudiant', 'Pseudo', 'Réponse'];
+            const menu = ['Étudiant', 'Identifiant', 'Réponse'];
             if (lines.length) menu.push('Intitulé');
             const final = [menu];
             for (const reaction of messageTarget.reactions.values()) {
                 const found = Object.keys(config.emojiId).filter(e => reaction.emoji.identifier === e);
                 if (found.length) {
-                    const foundEmoji = lines.filter(r => r.startsWith(reaction.emoji.name));
-                    const response = foundEmoji.length ? (emojiStrip(foundEmoji[0]) as string).slice(1) : null;
+                    const foundEmoji = lines.filter(r => r.startsWith(config.emojiId[found[0]][1]));
+                    const response = foundEmoji.length ? foundEmoji[0].split(' ').slice(1).join(' ') : null;
                     await reaction.fetchUsers();
                     reaction.users.forEach((u) => {
                         const member = getMemberFromUser(message.guild, u);
-                        const result = [member.displayName, member.user.tag, config.emojiId[found[0]]];
+                        const result = [member.displayName, member.user.id, config.emojiId[found[0]][0]];
                         if (response) result.push(response);
                         if (member && !member.user.bot) final.push(result);
                     });
